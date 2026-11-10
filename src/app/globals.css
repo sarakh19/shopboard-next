@@ -1,26 +1,73 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ShopBoard design tokens. This is the only CSS file in the project:
+   every component is styled with Tailwind utilities built from these tokens.
+
+   `--color-*: initial` removes Tailwind's default palette, so only the
+   ShopBoard colors exist (bg-primary works, bg-blue-500 does not). */
+@theme {
+  --color-*: initial;
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-muted: #5b6472;
+  --color-border: #e2e5ea;
+  --color-primary: #2f5bea;
+  --color-primary-hover: #2249c7;
+  --color-primary-soft: #e8eefd;
+  --color-on-primary: #ffffff;
+  --color-danger: #b42318;
+  --color-danger-soft: #fdecea;
+  --color-success: #12715b;
+  --color-overlay: rgb(16 24 40 / 0.5);
+
+  /* rounded-control (buttons, inputs) and rounded-card (cards, modal) */
+  --radius-control: 8px;
+  --radius-card: 10px;
+
+  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.08);
+
+  /* max-w-page: the width of the header, main content, and footer */
+  --container-page: 1120px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Dark mode: follows the operating system setting. Only the token values
+   change, so every component switches without any dark: classes. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-bg: #111318;
+    --color-surface: #1a1d24;
+    --color-text: #e6e8ec;
+    --color-muted: #a3aab6;
+    --color-border: #2c313b;
+    --color-primary: #7c9cff;
+    --color-primary-hover: #a3baff;
+    --color-primary-soft: #1f2a4a;
+    --color-on-primary: #111318;
+    --color-danger: #ff8a80;
+    --color-danger-soft: #3a1d1b;
+    --color-success: #5fd3b3;
+    --color-overlay: rgb(0 0 0 / 0.6);
+    --shadow-card: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply bg-bg font-sans leading-normal text-text;
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    @apply outline-3 outline-offset-2 outline-primary;
+  }
 }
