@@ -73,7 +73,16 @@ These rules keep the interface consistent. Follow them in every component.
 
 ## 6. Testing and Quality
 
-After each task run `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run build`. Then test the affected pages in the browser at mobile and desktop sizes, in light and dark mode, and check the Console. Report only results that were actually run.
+**Never change \*.test.ts or e2e/ to make a test pass. Fix the code, or ask me.**
+
+Automated tests:
+
+- `npm test` — Vitest: unit tests (`src/modules/cart/cart.logic.test.ts`) and component tests (`src/modules/checkout/components/CheckoutForm.test.tsx`). Test files sit next to the code they test.
+- `npm run test:e2e` — Playwright: `e2e/checkout.spec.ts` in Chromium. It starts `npm run dev` itself (or reuses a running one) and calls the real API, so it needs internet.
+- Test names say what must be true. Find elements by role or label (`getByRole`, `getByLabelText` / `getByLabel`), never by CSS class.
+- Async Server Components (the pages) cannot be rendered by Vitest; cover them with E2E tests.
+
+After each task run `npm test`, `npm run test:e2e`, `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run build`. Then test the affected pages in the browser at mobile and desktop sizes, in light and dark mode, and check the Console. Report only results that were actually run.
 
 Before committing or pushing, show me the changes and the test results and wait for my approval.
 
@@ -95,3 +104,6 @@ Lessons 1–12 from the React project still apply (see the `shopboard-react` CLA
 
 **Lesson 17 — The modal closed itself in development.** React's StrictMode runs an Effect twice (open, close, open). The short close fired the dialog's `close` event, which called `onClose` and reset the parent's state. Production was fine, so only a dev-mode test found it.
 **Rule:** An Effect must survive running twice. In an event that comes from cleanup, check the real state (`dialog.open`) before telling the parent. Test in `npm run dev` too, not only the production build.
+
+**Lesson 18 — An E2E search matched a hidden page.** `page.getByText('Leather Tote Bag')` found two elements on the cart page: the cart row and a link on the previous `/products` page, which Next.js 16 keeps hidden in the DOM (`<Activity>`). Playwright's strict mode stopped the test.
+**Rule:** In E2E tests, search inside the section you mean (`getByRole('region', { name: 'Your cart' })`), not the whole page.
